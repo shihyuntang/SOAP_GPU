@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from matplotlib.animation import FuncAnimation
 import matplotlib
+import matplotlib as mpl
 from matplotlib import rc,rcParams
 import glob
 import configparser
@@ -125,18 +126,19 @@ print('start to plot...')
 def animate(i):
 
      cax1.set_array(M[:-1, :-1, i].flatten())
+     cax1.set_array(G[:-1, :-1, i].flatten())
      ax1.set_title('Veolcity field (Rotation Phase %.3f)' % + float(time_array[i]))
 
      cax2.set_data(time_array[i], tot_rvs[i])
 
-fig1 = plt.figure(figsize=(24, 12))
+fig1 = plt.figure(figsize=(10, 5), dpi=300)
 ax1 = fig1.add_subplot(1,2,1)
 ax2 = fig1.add_subplot(1,2,2)
 
 
 ax1.set(xlim=(0, GRID), ylim=(0, GRID))
 
-cax1 = ax1.pcolormesh(x, y, M[:-1, :-1, 0],shading='auto',cmap=plt.cm.get_cmap('jet'))
+cax1 = ax1.pcolormesh(x, y, M[:-1, :-1, 0],shading='auto',cmap=mpl.cm.Spectral_r)
 cax1.set_clim(vmin=-3, vmax=3)
 
 cax2 = ax2.plot(time_array, tot_rvs,color='black',marker='.',linestyle='None')
@@ -146,6 +148,9 @@ ax2.set_ylabel('RV [m/s]')
 ax2.set_title('Tot RV')
 
 
+ax1.set_aspect('equal')
+ax1.set_yticks([])
+ax1.set_xticks([])
 
 anim = FuncAnimation(
     fig1, animate, interval=100, frames=len(t))

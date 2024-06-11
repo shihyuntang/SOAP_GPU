@@ -24,8 +24,13 @@ def LB_params(T_star, G2_LB_template, K0_LB_template, M0_LB_template):
     boundary_LB = LB_boundary(T_star)
     for id in np.arange(10):
 
-        LB_derived_array = np.array([G2_LB_template[id], K0_LB_template[id], M0_LB_template[id]])
-        params = np.polyfit(temp_derived_array[boundary_LB], LB_derived_array[boundary_LB], 1)
+        LB_derived_array = np.array(
+            [G2_LB_template[id], K0_LB_template[id], M0_LB_template[id]]
+            )
+        params = np.polyfit(
+            temp_derived_array[boundary_LB], LB_derived_array[boundary_LB],
+            1
+            )
         funcs = np.poly1d(params)
         lb[id] = funcs(T_star)
 
@@ -37,8 +42,10 @@ def LB_params(T_star, G2_LB_template, K0_LB_template, M0_LB_template):
 
 def mask_templates(Teff_star):
 
-    mask_type = np.array(['F9', 'G2', 'G8', 'G9', 'K2', 'K5', 'K6', 'M0', 'M2', 'M3', 'M4', 'M5'])
-    Teff_template_array = np.array([6050, 5770, 5480, 5380, 5100, 4400, 4300, 3800, 3400, 3250, 3100, 2800])
+    mask_type = np.array(
+        ['F9', 'G2', 'G8', 'G9', 'K2', 'K5', 'K6', 'M0', 'M2', 'M3', 'M4', 'M5'])
+    Teff_template_array = np.array(
+        [6050, 5770, 5480, 5380, 5100, 4400, 4300, 3800, 3400, 3250, 3100, 2800])
 
     index = np.argmin(np.abs(Teff_template_array - Teff_star))
     mask_template_name = mask_type[index]+'_mask.txt'
@@ -73,12 +80,8 @@ limba2 = float(config.get('star','limb2'   ))
 
 
 Temp  = int(config.get('star','Tstar'))
-
-
-
 Temp_diff_spot = int(config.get('star','Tdiff_spot'))
 Temp_diff_faculae = int(config.get('star','Tdiff_faculae'))
-
 
 N_act   = int(config.get('star','N_act'))
 
@@ -119,17 +122,19 @@ faculae_SED_data = input_dir+faculae_SED_name
 mu_array_data = input_dir+mu_array_name
 wave_data = input_dir+wave_array_name
 
-
+# wavelength scale
 wavelength_step = np.fromfile(wave_data,dtype='double')
-step_size = round(wavelength_step[3]-wavelength_step[2],5)
+step_size = np.round(wavelength_step[3]-wavelength_step[2], 5)
 vector_size = int(wavelength_step.size)
 
 no_thread = int(config.get('data_io','no_thread'))
 no_block = int(vector_size/no_thread)
 
+# number of mu angles
 spec_step = np.fromfile(mu_array_data,dtype='double').size
 convec_no_spec = int(spec_step+1)
 
+# load limb brightening info
 lb_frame = np.load(input_dir+'Limb_brightening_info.npz')
 
 LB_G2_array = lb_frame['LB_G2']
@@ -175,6 +180,7 @@ else:
         os.mkdir(final_spec_dir)
 
 
+    # load active region info
     long_list = np.zeros(N_act)
     lat_list = np.zeros(N_act)
     size_list = np.zeros(N_act)
@@ -189,25 +195,20 @@ else:
 
 
     phase_out = np.arange(0.0,rot_num,rot_step)
-
     phase_out_txt = output_prefix+'/'+file_name_prefix+'_'+'phase_locator.txt'
     np.savetxt(phase_out_txt, phase_out.T)
 
-
     spot_info = np.zeros((phase_out.size,2))
 
-
+    # active region info at different phases, for spot evo i suppose.
     for id in np.arange(phase_out.size):
-
 
         lat_array = lat_list
         long_array = long_list
         size_array = size_list
         type_array = type_list
 
-
         out_cube = np.stack((lat_array, long_array, size_array, type_array),axis=1)
-
 
         out_txt = maps_dir+'maps'+str(int(id))+'_for_all.txt'
         np.savetxt(out_txt, out_cube)
@@ -215,19 +216,20 @@ else:
         spot_info[id,0] = id
         spot_info[id,1] = type_array.size
 
-
     f_txt = maps_dir+'final_info.txt'
     np.savetxt(f_txt, spot_info)
 
 
 
 
+# for solar (photosphere)
 start = time.time()
 cmds0 = "./SOAP_initialize "+str(vector_size)+" "+str(PROT)+" "+str(omega_ratio)+" "+str(incl)+" "+str(RAD)+" "+str(limba1)+" "+str(limba2)+" "+str(GRID)+" "+str(inst_profile_sigma)+" "+str(step_size)+" "+str(step_size)+" "+str(50.0)\
         +" "+str(no_block)+" "+str(no_thread)+" "+solar_data+" "+output_prefix+"/"+file_name_prefix+" "+str(convec_no_spec)+" "+mu_array_data+" "+wave_data+" "+str(LB0)+" "+str(LB1)+" "+str(LB2)+" "+str(LB3)
 
 os.system(cmds0)
 
+# for SED (continuum)
 cmds1 = "./SOAP_initialize "+str(vector_size)+" "+str(PROT)+" "+str(omega_ratio)+" "+str(incl)+" "+str(RAD)+" "+str(limba1)+" "+str(limba2)+" "+str(GRID)+" "+str(inst_profile_sigma)+" "+str(step_size)+" "+str(step_size)+" "+str(50.0)\
         +" "+str(no_block)+" "+str(no_thread)+" "+solar_SED_spectra_data+" "+output_prefix+"/"+file_name_prefix+"_SED"+" "+str(convec_no_spec)+" "+mu_array_data+" "+wave_data+" "+str(LB0)+" "+str(LB1)+" "+str(LB2)+" "+str(LB3)
 
@@ -258,10 +260,7 @@ print('Start to calculate RVs')
 frame_size = phase_out.size
 cutoff = 200
 
-
 vrad_ccf2 = np.arange(-1*CCF_windows,CCF_windows+1.,CCF_size)
-
-
 
 cutoff_new = 10
 wave_extend = 100.0
@@ -280,7 +279,11 @@ quiet_spec_SED = fstar_quiet_sun_SED[cutoff_new:-1*cutoff_new]
 
 wavelength = wavelength_quiet[cutoff_new:-1*cutoff_new]
 
-mask_template = input_prefix+config.get('data_io','mask_prefix')+mask_templates(Temp)
+if Temp <= 4300:
+    mask_template = input_prefix+config.get('data_io','mask_prefix')+'K6_mask.txt'
+elif Temp > 4300:
+    mask_template = input_prefix+config.get('data_io','mask_prefix')+mask_templates(Temp)
+
 
 templates = np.loadtxt(mask_template)
 freq_line = templates[:,0]
