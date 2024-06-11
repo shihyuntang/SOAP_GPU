@@ -150,7 +150,7 @@ cax2 = ax2.plot(time_array, tot_rvs,color='black',marker='.',linestyle='None')
 cax2 = ax2.plot(time_array, tot_rvs,color='red',marker='o',linestyle='None')[0]
 ax2.set_xlabel('Phase')
 ax2.set_ylabel('RV [m/s]')
-ax2.set_title('Tot RV')
+ax2.set_title('Flux RV')
 
 
 ax1.set_aspect('equal')
