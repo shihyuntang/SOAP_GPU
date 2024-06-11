@@ -1,8 +1,8 @@
 import numpy as np
-from numba import njit
+# from numba import njit
 c = 299792458.
 
-@njit
+#@njit
 def calculate_CCF_1(
         velocity_array, wavelength, wavelength_line, weight_line, 
         wavelength_extend):
@@ -39,7 +39,7 @@ def calculate_CCF_1(
 
     return mask_template
 
-@njit
+#@njit
 def calculate_CCF_2(velocity_array, spectrum, mask_template):
 
     CCF = np.zeros(velocity_array.size)
@@ -51,13 +51,13 @@ def calculate_CCF_2(velocity_array, spectrum, mask_template):
 
     return CCF
 
-@njit
+#@njit
 def Delta_wavelength(v,wavelength0):
     beta = v/c
     delta_wavelength = wavelength0 * (np.sqrt((1+beta)/(1-beta))-1)
     return delta_wavelength
 
-@njit
+#@njit
 def calc_mask(
         wavelength_extend ,wavelength_line_shift, weight_line, begin_wave, 
         mask_width=820, hole_width=0):
