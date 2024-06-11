@@ -7,6 +7,8 @@ import matplotlib as mpl
 from matplotlib import rc,rcParams
 import glob
 import configparser
+plt.style.use('~/.matplotlib/matplotlibrc')
+
 config = configparser.ConfigParser()
 
 config_name = glob.glob('./*.cfg')[0]
@@ -118,7 +120,8 @@ for i_point in np.arange(t.size):
 
 frame_name = file_name_prefix+'_GPU_SOAP_RV_data.npz'
 RV_frames = np.load(frame_name)
-tot_rvs = RV_frames['tot']
+# tot_rvs = RV_frames['tot']
+tot_rvs = RV_frames['flux']
 
 
 
@@ -127,7 +130,9 @@ def animate(i):
 
      cax1.set_array(M[:-1, :-1, i].flatten())
      cax1.set_array(G[:-1, :-1, i].flatten())
-     ax1.set_title('Veolcity field (Rotation Phase %.3f)' % + float(time_array[i]))
+     ax1.set_title(
+         'Veolcity field (Rotation Phase %.3f)' % + float(time_array[i])
+         )
 
      cax2.set_data(time_array[i], tot_rvs[i])
 
