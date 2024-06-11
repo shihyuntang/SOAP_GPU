@@ -292,12 +292,14 @@ index_lines = (freq_line > wavelength.min()) & (freq_line < wavelength.max()) & 
 freq_line_G2 = freq_line[index_lines]
 contrast_line_G2 =contrast_line[index_lines]
 
+# making CCF templates at every velocities
 no_points = int(wave_extend/step_size)
 wavelength_before = np.linspace(np.min(wavelength)-step_size*no_points,np.min(wavelength), no_points)
 wavelength_after = np.linspace(wavelength[-1], wavelength[-1]+step_size*no_points, no_points)
 wavelength_extend = np.concatenate((wavelength_before,wavelength,wavelength_after))
 mask_template = calculate_CCF_1(vrad_ccf2,wavelength,freq_line_G2,contrast_line_G2, wavelength_extend)
 
+# doing the CCF
 CCF_quiet_Sun = calculate_CCF_2(vrad_ccf2, quiet_spec, mask_template)
 CCF_quiet_Sun /= np.max(CCF_quiet_Sun)
 
