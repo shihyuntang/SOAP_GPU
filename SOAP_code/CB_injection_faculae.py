@@ -410,11 +410,11 @@ for i_teff in np.arange(tstar_array.size):
 
     T_eff  = np.array([tstar, tspot, tfaculae])
 
-    # mask_template = input_prefix+config.get('data_io','mask_prefix')+mask_templates(tstar)
-    if Temp <= 4300:
-        mask_template = input_prefix+config.get('data_io','mask_prefix')+'K6_mask.txt'
-    elif Temp > 4300:
-        mask_template = input_prefix+config.get('data_io','mask_prefix')+mask_templates(tstar)
+    mask_template = input_prefix+config.get('data_io','mask_prefix')+mask_templates(tstar)
+    # if Temp <= 4300:
+    #     mask_template = input_prefix+config.get('data_io','mask_prefix')+'K6_mask.txt'
+    # elif Temp > 4300:
+    #     mask_template = input_prefix+config.get('data_io','mask_prefix')+mask_templates(tstar)
 
 
     templates = np.loadtxt(mask_template)

@@ -279,10 +279,11 @@ quiet_spec_SED = fstar_quiet_sun_SED[cutoff_new:-1*cutoff_new]
 
 wavelength = wavelength_quiet[cutoff_new:-1*cutoff_new]
 
-if Temp <= 4300:
-    mask_template = input_prefix+config.get('data_io','mask_prefix')+'K6_mask.txt'
-elif Temp > 4300:
-    mask_template = input_prefix+config.get('data_io','mask_prefix')+mask_templates(Temp)
+mask_template = input_prefix+config.get('data_io','mask_prefix')+mask_templates(Temp)
+# if Temp <= 4300:
+#     mask_template = input_prefix+config.get('data_io','mask_prefix')+'K6_mask.txt'
+# elif Temp > 4300:
+#     mask_template = input_prefix+config.get('data_io','mask_prefix')+mask_templates(Temp)
 
 
 templates = np.loadtxt(mask_template)
