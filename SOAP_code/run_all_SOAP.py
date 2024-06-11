@@ -350,7 +350,9 @@ for type_id in np.arange(3):
     for i in np.arange(max_num):
 
         print(i,' over ',frame_size,' ',types)
-        spec_name = file_name_prefix+'_Spec_'+types+'_%s_.bin' % int(i)
+        # # using full res spectra
+        # spec_name = file_name_prefix+'_Spec_'+types+'_%s_.bin' % int(i)
+        # use low res spectra
         lower_name = file_name_prefix+'_lower_spec_'+types+'_%s_.bin' % int(i)
 
         if os.path.isfile(final_spec_dir+lower_name):
